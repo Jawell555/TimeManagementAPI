@@ -41,11 +41,11 @@ namespace TimeMngmntAPI.Controllers
             {
                 return BadRequest("Shift schedule data is required.");
             }
-            if(!TimeValidationServices.TimeValidationService.TryParseValidTime(shiftSchedule.ShiftStartTime, out TimeOnly startTime))
+            if(!TimeValidationServices.TryParseValidTime(shiftSchedule.ShiftStartTime, out TimeOnly startTime))
             {
                 return BadRequest("Invalid time format. Use hh:mm AM/PM or HH:mm (e.g., 09:30 AM, 09:30 PM, or 21:30).");
             }
-            if (!TimeValidationServices.TimeValidationService.TryParseValidTime(shiftSchedule.ShiftEndTime, out TimeOnly endTime))
+            if (!TimeValidationServices.TryParseValidTime(shiftSchedule.ShiftEndTime, out TimeOnly endTime))
             {
                 return BadRequest("Invalid time format. Use hh:mm AM/PM or HH:mm (e.g., 09:30 AM, 09:30 PM, or 21:30).");
             }
@@ -66,11 +66,11 @@ namespace TimeMngmntAPI.Controllers
             {
                 return BadRequest("Shift schedule data is required.");
             }
-            if (!TimeValidationServices.TimeValidationService.TryParseValidTime(shiftSchedule.ShiftStartTime, out TimeOnly startTime))
+            if (!TimeValidationServices.TryParseValidTime(shiftSchedule.ShiftStartTime, out TimeOnly startTime))
             {
                 return BadRequest("Invalid time format. Use hh:mm AM/PM or HH:mm (e.g., 09:30 AM, 09:30 PM, or 21:30).");
             }
-            if (!TimeValidationServices.TimeValidationService.TryParseValidTime(shiftSchedule.ShiftEndTime, out TimeOnly endTime))
+            if (!TimeValidationServices.TryParseValidTime(shiftSchedule.ShiftEndTime, out TimeOnly endTime))
             {
                 return BadRequest("Invalid time format. Use hh:mm AM/PM or HH:mm (e.g., 09:30 AM, 09:30 PM, or 21:30).");
             }

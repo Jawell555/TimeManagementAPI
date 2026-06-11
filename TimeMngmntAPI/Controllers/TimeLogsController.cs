@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using TimeKeepingAppService;
 using TimeKeepingManagementDataService;
 using TimeKeepingModels;
+using TimeMngmntAPI.Helpers;
 using TimeMngmntAPI.Models;
 
 namespace TimeMngmntAPI.Controllers
@@ -49,6 +50,20 @@ namespace TimeMngmntAPI.Controllers
             if (timeLog == null)
             {
                 return NotFound("No time log found for the specified employee ID.");
+            }
+            return Ok(timeLog);
+        }
+        [HttpGet("latest-logs/{date:string}")]
+        public ActionResult<TimeLogs> GetLatestEmployeeLogByDate(string date)
+        {
+            if (!TimeValidationServices.TryParseValidDate(date, out DateOnly parsedDate))
+            {
+                return BadRequest("Invalid date format. Use MM/dd/yyyy (e.g., 12/31/2024).");
+            }
+            var timeLog = _appService.GetTimeLogsByDate(parsedDate);
+            if (timeLog == null)
+            {
+                return NotFound("No time log found for the specified date.");
             }
             return Ok(timeLog);
         }
