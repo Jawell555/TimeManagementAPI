@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using TimeKeepingAppService;
 using TimeKeepingManagementDataService;
 using TimeKeepingModels;
+using TimeMngmntAPI.Helpers;
+using TimeMngmntAPI.Models;
 
 namespace TimeMngmntAPI.Controllers
 {
@@ -25,7 +27,7 @@ namespace TimeMngmntAPI.Controllers
         [HttpGet("{id:int}")]
         public ActionResult<IEnumerable<ShiftSchedule>> GetShiftById(int id)
         {
-            var shiftSchedule = _appService.GetShiftSchedule(id);
+            var shiftSchedule = _appService.GetEmployeeSchedule(id);
             if (shiftSchedule == null)
             {
                 return NotFound();
@@ -39,12 +41,20 @@ namespace TimeMngmntAPI.Controllers
             {
                 return BadRequest("Shift schedule data is required.");
             }
+            if(!TimeValidationServices.TimeValidationService.TryParseValidTime(shiftSchedule.ShiftStartTime, out TimeOnly startTime))
+            {
+                return BadRequest("Invalid time format. Use hh:mm AM/PM or HH:mm (e.g., 09:30 AM, 09:30 PM, or 21:30).");
+            }
+            if (!TimeValidationServices.TimeValidationService.TryParseValidTime(shiftSchedule.ShiftEndTime, out TimeOnly endTime))
+            {
+                return BadRequest("Invalid time format. Use hh:mm AM/PM or HH:mm (e.g., 09:30 AM, 09:30 PM, or 21:30).");
+            }
             var shiftSchedules = new ShiftSchedule
             {
                 ShiftID = _appService.GenerateShiftID(),
                 ShiftName = shiftSchedule.ShiftName,
-                ShiftStartTime = shiftSchedule.ShiftStartTime,
-                ShiftEndTime = shiftSchedule.ShiftEndTime
+                ShiftStartTime = startTime,
+                ShiftEndTime = endTime
             };
             _appService.AddShiftSchedule(shiftSchedules);
             return CreatedAtAction(nameof(GetShiftById), new { id = shiftSchedules.ShiftID }, shiftSchedules);
@@ -56,21 +66,29 @@ namespace TimeMngmntAPI.Controllers
             {
                 return BadRequest("Shift schedule data is required.");
             }
-            var existingShift = _appService.GetShiftSchedule(shiftID);
+            if (!TimeValidationServices.TimeValidationService.TryParseValidTime(shiftSchedule.ShiftStartTime, out TimeOnly startTime))
+            {
+                return BadRequest("Invalid time format. Use hh:mm AM/PM or HH:mm (e.g., 09:30 AM, 09:30 PM, or 21:30).");
+            }
+            if (!TimeValidationServices.TimeValidationService.TryParseValidTime(shiftSchedule.ShiftEndTime, out TimeOnly endTime))
+            {
+                return BadRequest("Invalid time format. Use hh:mm AM/PM or HH:mm (e.g., 09:30 AM, 09:30 PM, or 21:30).");
+            }
+            var existingShift = _appService.GetEmployeeSchedule(shiftID);
             if (existingShift == null)
             {
                 return NotFound();
             }
             existingShift.ShiftName = shiftSchedule.ShiftName;
-            existingShift.ShiftStartTime = shiftSchedule.ShiftStartTime;
-            existingShift.ShiftEndTime = shiftSchedule.ShiftEndTime;
+            existingShift.ShiftStartTime = startTime;
+            existingShift.ShiftEndTime = endTime;
             _appService.UpdateShiftSchedule(existingShift);
             return NoContent();
         }
         [HttpDelete("{shiftID:int}")]
         public IActionResult DeleteShift(int shiftID)
         {
-            var existingShift = _appService.GetShiftSchedule(shiftID);
+            var existingShift = _appService.GetEmployeeSchedule(shiftID);
             if (existingShift == null)
             {
                 return NotFound();
@@ -78,5 +96,6 @@ namespace TimeMngmntAPI.Controllers
             _appService.DeleteShiftSchedule(shiftID);
             return NoContent();
         }
+        
     }
 }

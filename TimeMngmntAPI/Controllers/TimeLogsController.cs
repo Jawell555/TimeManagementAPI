@@ -66,7 +66,7 @@ namespace TimeMngmntAPI.Controllers
                 return Conflict("You already timed in.");
             }
             Employee employee = _appService.GetEmployee(TimeLogs.EmployeeID);
-            ShiftSchedule shift = _appService.GetShiftSchedule(employee.ShiftID);
+            ShiftSchedule shift = _appService.GetEmployeeSchedule(employee.ShiftID);
             dateToday = DateOnly.FromDateTime(timeInTime);
             DateTime start = dateToday.ToDateTime(shift.ShiftStartTime);
             TimeSpan late = _appService.calcLate(start, timeInTime);
@@ -92,7 +92,7 @@ namespace TimeMngmntAPI.Controllers
             }
 
             Employee employee = _appService.GetEmployee(TimeLogs.EmployeeID);
-            ShiftSchedule shift = _appService.GetShiftSchedule(employee.ShiftID);
+            ShiftSchedule shift = _appService.GetEmployeeSchedule(employee.ShiftID);
             dateToday = DateOnly.FromDateTime(DateTime.Now);
             DateTime end = dateToday.ToDateTime(shift.ShiftEndTime);
             log.TimeOut = timeOutTime;
