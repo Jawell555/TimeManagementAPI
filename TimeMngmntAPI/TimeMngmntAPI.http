@@ -1,6 +1,6 @@
 @TimeMngmntAPI_HostAddress = http://localhost:5202
 
-GET {{TimeMngmntAPI_HostAddress}}/weatherforecast/
+GET {{TimeMngmntAPI_HostAddress}}/timelogs/
 Accept: application/json
 
 ###
